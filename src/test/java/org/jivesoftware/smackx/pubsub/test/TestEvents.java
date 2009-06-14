@@ -1,8 +1,9 @@
 /*
  * Created on 2009-04-22
  */
-package org.jivesoftware.smackx.pubsub;
+package org.jivesoftware.smackx.pubsub.test;
 
+import org.jivesoftware.smackx.pubsub.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

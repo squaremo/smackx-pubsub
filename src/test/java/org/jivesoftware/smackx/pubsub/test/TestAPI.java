@@ -1,7 +1,7 @@
 /*
  * Created on 2009-04-09
  */
-package org.jivesoftware.smackx.pubsub;
+package org.jivesoftware.smackx.pubsub.test;
  
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;

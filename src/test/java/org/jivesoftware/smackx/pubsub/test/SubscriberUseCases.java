@@ -1,8 +1,9 @@
 /*
  * Created on 2009-04-09
  */
-package org.jivesoftware.smackx.pubsub;
+package org.jivesoftware.smackx.pubsub.test;
  
+import org.jivesoftware.smackx.pubsub.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
