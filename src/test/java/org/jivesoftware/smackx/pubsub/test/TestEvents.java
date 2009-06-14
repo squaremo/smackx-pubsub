@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import java.util.concurrent.TimeUnit;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError.Type;
@@ -86,7 +87,9 @@ public class TestEvents extends SmackTestCase
 		form.setNotifyConfig(true);
 		creatorNode.sendConfigurationForm(form);
 
-   		ConfigurationEvent event = queue.take().event;
+        NodeConfigCoordinator ncc = queue.poll(2000, TimeUnit.MILLISECONDS);
+        assertNotNull("Did not receive a reply in time.", ncc);
+   		ConfigurationEvent event = ncc.event;
    		assertEquals(nodeId, event.getNode());
    		assertNull(event.getConfiguration());
    		
@@ -313,7 +316,8 @@ public class TestEvents extends SmackTestCase
         
         for(int i=0; i<3; i++)
         {
-    		ItemEventCoordinator coord = queue.take();
+    		ItemEventCoordinator coord = queue.poll(2000, TimeUnit.MILLISECONDS);
+            assertNotNull("Did not receive a reply in time.", coord);
         	if (coord == creatorHandler)
         		assertEquals(1, coord.events.getSubscriptions().size());
         	else
@@ -428,7 +432,8 @@ public class TestEvents extends SmackTestCase
         
         creatorNode.deleteAllItems();
         
-   		ItemDeleteCoordinator coord = queue.take();
+   		ItemDeleteCoordinator coord = queue.poll(2000, TimeUnit.MILLISECONDS);
+        assertNotNull("Did not receive a reply in time.", coord);
    		assertNull(nodeId, coord.event);
 	}
 
@@ -461,7 +466,8 @@ public class TestEvents extends SmackTestCase
 		
 		for (int i=0; i<2; i++)
 		{
-			ItemEventCoordinator event = queue.take();
+			ItemEventCoordinator event = queue.poll(2000, TimeUnit.MILLISECONDS);
+            assertNotNull("Did not receive a reply in time.", event);
 			
 			if (event.id.equals("sub1"))
 			{
