@@ -22,14 +22,20 @@
         <dependency>
             <groupId>smack</groupId>
             <artifactId>smack</artifactId>
-            <version>3.0.4</version>
+            <version>3.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>smack</groupId>
             <artifactId>smackx</artifactId>
-            <version>3.0.4</version>
+            <version>3.1.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>smack</groupId>
+            <artifactId>smack-test</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
         </dependency>
     <dependency>
       <groupId>junit</groupId>
