@@ -1,0 +1,50 @@
+* XEP-0060 (PubSub) extensions to Smack
+
+Original code by rcollier: http://www.igniterealtime.org/community/people/rcollier
+Posted at http://www.igniterealtime.org/community/thread/38433
+
+Modifications by Michael Bridgen <mikeb@lshift.net>, including
+Mavenisation.
+
+** Building
+
+This is a straight-forward Maven build.  Except that it depends on
+newer versions of the smack jars than I can find anywhere in a Maven
+repo, so I have included them here, along with a script for installing
+them.  There are plans to have an igniterealtime Maven repo:
+http://www.igniterealtime.org/issues/browse/SMACK-265.  Until then
+we'll have to make do.
+
+Note that many of the tests fail with OpenFire, because the library
+follows v1.12 of XEP-0060, while OpenFire implements v1.8.
+
+Most tests fail with ejabberd, because of its idiosyncratic node
+scheme (see
+http://dev.esl.eu/blog/2008/06/27/differences-openfireejabberd-part-i/);
+but this may be fixable to some extent, and I'm trying it.
+
+$ sh install-libs.sh
+$ mvn -DskipTests install
+
+This makes a jar file in target/, and installs it to your local Maven
+repo.
+
+** Using with ejabberd
+
+The tests will run into ejabberd's registration timeout, giving a 500
+Resource Constraint error.  To avoid this, you can put an global
+option in ejabberd.cfg:
+
+%% Allow fast regiatrations for testing
+{registration_timeout, infinity}.
+
+The 3.10 Smack release also has an error in the SASL implementation,
+which results in a NullPointException.  This needs a patch, which I've
+included in the JAR for the time being.
+
+(thanks http://www.ejabberd.im/node/3003 and
+        http://www.igniterealtime.org/community/thread/35976)
+
+Most tests still fail with ejabberd; I've started making the tests use
+ejabberd's /home/ node structure, which ought also to work with
+OpenFire.
