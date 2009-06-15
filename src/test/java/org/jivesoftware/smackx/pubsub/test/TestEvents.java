@@ -1,5 +1,12 @@
 /*
  * Created on 2009-04-22
+ *
+ * Modified by mikeb@lshift.net:
+ *  - poll() in some places rather than take, so that tests fail rather than
+ *    fail to complete.
+ *  - @Ignore some tests that will fail until OpenFire implements v1.12 of the spec.
+ *  - Use ejabberd's /home/ structure so that tests can run against ejabberd too.
+ * 
  */
 package org.jivesoftware.smackx.pubsub.test;
 
@@ -18,6 +25,7 @@ import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;
 import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
+import org.junit.Ignore;
 
 public class TestEvents extends SmackTestCase
 {
@@ -38,10 +46,19 @@ public class TestEvents extends SmackTestCase
 		return "pubsub." + getServiceName();
 	}
 
+    private String getHomeNodeId(String user) {
+        return "/home/" + getServiceName() + "/" + user.substring(0, user.indexOf('@'));
+    }
+
+    private String getNodeId(String user, String name) {
+        return getHomeNodeId(user) + "/" + name;
+    }
+
 	public void testCreateAndGetNode() throws Exception
 	{
-		String nodeId = "MyTestNode";
+		String nodeId = getNodeId(getConnection(0).getUser(), "MyTestNode");
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        creatorMgr.createNode(getHomeNodeId(getConnection(0).getUser()));
 		
 		Node creatorNode = null;
 		try
@@ -62,6 +79,7 @@ public class TestEvents extends SmackTestCase
 		assertNotNull(subNode);
 	}
 
+    @Ignore("Ignore until OpenFire implements XEP-0060 v1.12: http://www.igniterealtime.org/community/thread/38466")
 	public void testConfigureAndNotify() throws Exception
 	{
 		// Setup event source
