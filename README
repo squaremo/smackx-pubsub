@@ -29,6 +29,12 @@ $ mvn -DskipTests install
 This makes a jar file in target/, and installs it to your local Maven
 repo.
 
+** Debugging
+
+Use the system property smack.debugEnabled to tell smack to show the
+XMPP debugger.  I've put it in NetBeans's Actions tab (Project
+Properties).
+
 ** Using with ejabberd
 
 The tests will run into ejabberd's registration timeout, giving a 500
