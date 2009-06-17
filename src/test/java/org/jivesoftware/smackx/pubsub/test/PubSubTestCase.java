@@ -25,6 +25,32 @@ abstract public class PubSubTestCase extends SmackTestCase
 		super("PubSub Test Case");
 	}
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        for (int i=0; i<getMaxConnections(); i++) {
+            PubSubManager mgr = getManager(i);
+            try {
+                mgr.createNode(getHomeNodeId(i));
+            }
+            catch (XMPPException e) {
+                if (e.getXMPPError().getCode() != 409) {
+                    // NOT a conflict, i.e., not because it was already there.
+                    throw e;
+                }
+            }
+        }
+    }
+
+    protected String getHomeNodeId(int conn) {
+        return "/home/" + getServiceName() + "/" + getUsername(conn);
+    }
+
+    protected String getNodeId(int conn, String name) {
+        return getHomeNodeId(conn) + "/" + name;
+    }
+
+
 	protected Node getPubnode(PubSubManager pubMgr, boolean persistItems, boolean deliverPayload) throws XMPPException
 	{
 		ConfigureForm form = new ConfigureForm(FormType.submit);

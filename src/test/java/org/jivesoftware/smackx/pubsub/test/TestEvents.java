@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
 import org.junit.Ignore;
 
-public class TestEvents extends SmackTestCase
+public class TestEvents extends PubSubTestCase
 {
 
 	public TestEvents(String str)
@@ -41,24 +41,10 @@ public class TestEvents extends SmackTestCase
 		return 2;
 	}
 
-	private String getService()
-	{
-		return "pubsub." + getServiceName();
-	}
-
-    private String getHomeNodeId(String user) {
-        return "/home/" + getServiceName() + "/" + user.substring(0, user.indexOf('@'));
-    }
-
-    private String getNodeId(String user, String name) {
-        return getHomeNodeId(user) + "/" + name;
-    }
-
 	public void testCreateAndGetNode() throws Exception
 	{
-		String nodeId = getNodeId(getConnection(0).getUser(), "MyTestNode");
+		String nodeId = getNodeId(0, "MyTestNode");
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-        creatorMgr.createNode(getHomeNodeId(getConnection(0).getUser()));
 		
 		Node creatorNode = null;
 		try
@@ -79,11 +65,11 @@ public class TestEvents extends SmackTestCase
 		assertNotNull(subNode);
 	}
 
-    @Ignore("Ignore until OpenFire implements XEP-0060 v1.12: http://www.igniterealtime.org/community/thread/38466")
+    @Ignore("Ignore until OpenFire implements XEP-0060 v1.12: http://www.igniterealtime.org/community/thread/38466.  ejabberd has the same problem.")
 	public void testConfigureAndNotify() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		
 		Node creatorNode = getPubnode(creatorMgr, nodeId, false, true);
@@ -123,10 +109,14 @@ public class TestEvents extends SmackTestCase
    		assertTrue(event.getConfiguration().isDeliverPayloads());
 	}
 
+    // http://xmpp.org/extensions/xep-0060.html#publisher-publish-error-badpayload
+    // ¤7.1.3.6
+    // This is a no-payload, persistent node; ejabberd complains that a payload
+    // should have been sent.
 	public void testSendAndReceiveNoPayload() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
@@ -157,7 +147,7 @@ public class TestEvents extends SmackTestCase
 	public void testPublishAndReceiveNoPayload() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
@@ -175,7 +165,8 @@ public class TestEvents extends SmackTestCase
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.publish(new Item(itemId));
         
-   		ItemEventCoordinator coord = queue.take();
+   		ItemEventCoordinator coord = queue.poll(1000, TimeUnit.MILLISECONDS);
+        assertNotNull("Did not receive reply in time (probably wrong reply).", coord);
        	assertEquals(1, coord.events.getItems().size());
        	assertEquals(itemId, coord.events.getItems().get(0).getId());
 	}
@@ -183,7 +174,7 @@ public class TestEvents extends SmackTestCase
 	public void testSendAndReceiveSimplePayload() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, true);
 
@@ -258,7 +249,7 @@ public class TestEvents extends SmackTestCase
 	public void testSendAndReceiveMultipleSubs() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
@@ -298,7 +289,7 @@ public class TestEvents extends SmackTestCase
 	public void testSendAndReceiveMultipleItems() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
@@ -347,7 +338,7 @@ public class TestEvents extends SmackTestCase
 	public void testSendAndReceiveDelayed() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
@@ -377,7 +368,7 @@ public class TestEvents extends SmackTestCase
 	public void testDeleteItemAndNotify() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
@@ -421,7 +412,7 @@ public class TestEvents extends SmackTestCase
 	public void testPurgeAndNotify() throws Exception
 	{
 		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
+		String nodeId = getNodeId(0, "TestNode" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 		
 		Node creatorNode = getPubnode(creatorMgr, nodeId, true, false);
@@ -458,9 +449,9 @@ public class TestEvents extends SmackTestCase
 	public void testListenerMultipleNodes() throws Exception
 	{
 		// Setup event source
-		String nodeId1 = "Node-1-" + System.currentTimeMillis();
+		String nodeId1 = getNodeId(0, "Node-1-" + System.currentTimeMillis());
 		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		String nodeId2 = "Node-2-" + System.currentTimeMillis();
+		String nodeId2 = getNodeId(0, "Node-2-" + System.currentTimeMillis());
 		
 		Node creatorNode1 = getPubnode(creatorMgr, nodeId1, true, false);
 		Node creatorNode2 = getPubnode(creatorMgr, nodeId2, true, false);
