@@ -114,14 +114,7 @@ public class Item<E extends PacketExtension> implements PacketExtension
 	{
 		StringBuilder builder = new StringBuilder("<item");
 		
-		if (id == null)
-		{
-			if (payload == null)
-				builder.append("/>");
-			else
-				builder.append(">");
-		}
-		else
+		if (id != null)
 		{
 			builder.append(" id='");
 			builder.append(id);

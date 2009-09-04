@@ -20,13 +20,13 @@
       <!-- TODO: Use the igniterealtime.org repo when it's available;
       http://www.igniterealtime.org/community/message/164751#164751 -->
         <dependency>
-            <groupId>smack</groupId>
+            <groupId>jivesoftware</groupId>
             <artifactId>smack</artifactId>
             <version>3.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>smack</groupId>
+            <groupId>jivesoftware</groupId>
             <artifactId>smackx</artifactId>
             <version>3.1.0</version>
             <scope>compile</scope>
