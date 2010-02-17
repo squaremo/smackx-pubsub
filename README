@@ -1,5 +1,13 @@
 * XEP-0060 (PubSub) extensions to Smack
 
+*NB*: smackx-pubsub is now in IgniteRealtime's SVN repository, and is
+actively maintained there:
+http://www.igniterealtime.org/fisheye/browse/svn-org/smack/trunk/source/org/jivesoftware/smackx/pubsub
+
+That should be considered the canonical source repository; I'm leaving
+this here in case there's stuff that hasn't made it into SVN, and for
+the notes on ejabberd compatibility below.
+
 Original code by rcollier: http://www.igniterealtime.org/community/people/rcollier
 Posted at http://www.igniterealtime.org/community/thread/38433
 
